@@ -41,18 +41,17 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 		#undef _GETOPT_API
 	#endif
 
-	#if defined(EXPORTS_GETOPT) && defined(STATIC_GETOPT)
-		#error "The preprocessor definitions of EXPORTS_GETOPT and STATIC_GETOPT can only be used individually"
-	#elif defined(STATIC_GETOPT)
-		#pragma message("Warning static builds of getopt violate the Lesser GNU Public License")
-		#define _GETOPT_API
-	#elif defined(EXPORTS_GETOPT)
-		#pragma message("Exporting getopt library")
-		#define _GETOPT_API __declspec(dllexport)
-	#else
-		#pragma message("Importing getopt library")
-		#define _GETOPT_API __declspec(dllimport)
-	#endif
+
+    #if defined(_MSC_VER)
+        //  Microsoft
+        #define _GETOPT_API __declspec(dllimport)
+    #elif defined(__GNUC__)
+        //  GCC
+        #define _GETOPT_API  __attribute__((visibility("default")))
+    #else
+        #define _GETOPT_API
+        #pragma warning Unknown dynamic link import/export semantics.
+    #endif
 
 	// Change behavior for C\C++
 	#ifdef __cplusplus
@@ -69,7 +68,7 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 	#define	null_argument		0	/*Argument Null*/
 	#define	no_argument			0	/*Argument Switch Only*/
 	#define required_argument	1	/*Argument Required*/
-	#define optional_argument	2	/*Argument Optional*/	
+	#define optional_argument	2	/*Argument Optional*/
 
 	// Shorter Options
 	#define ARG_NULL	0	/*Argument Null*/
@@ -82,9 +81,9 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 _BEGIN_EXTERN_C
 
-	extern _GETOPT_API int optind;
-	extern _GETOPT_API int opterr;
-	extern _GETOPT_API int optopt;
+	extern  _GETOPT_API int optind;
+	extern  _GETOPT_API int opterr;
+	extern  _GETOPT_API int optopt;
 
 	// Ansi
 	struct option_a
@@ -110,8 +109,8 @@ _BEGIN_EXTERN_C
 	extern _GETOPT_API wchar_t *optarg_w;
 	extern _GETOPT_API int getopt_w(int argc, wchar_t *const *argv, const wchar_t *optstring) _GETOPT_THROW;
 	extern _GETOPT_API int getopt_long_w(int argc, wchar_t *const *argv, const wchar_t *options, const struct option_w *long_options, int *opt_index) _GETOPT_THROW;
-	extern _GETOPT_API int getopt_long_only_w(int argc, wchar_t *const *argv, const wchar_t *options, const struct option_w *long_options, int *opt_index) _GETOPT_THROW;	
-	
+	extern _GETOPT_API int getopt_long_only_w(int argc, wchar_t *const *argv, const wchar_t *options, const struct option_w *long_options, int *opt_index) _GETOPT_THROW;
+
 _END_EXTERN_C
 
 	#undef _BEGIN_EXTERN_C
