@@ -14,17 +14,9 @@ option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
 
-#file(GLOB MY_PUBLIC_HEADERS
-#  "./*.h"
-#  "fastcluster/fastcluster.h"
-#  "logging/log.h"
-#  "getopt/getopt.h"
-#)
-#file(COPY ${MY_PUBLIC_HEADERS} DESTINATION myDestination)
+set(TARGET_INCLUDE_DIR "${CMAKE_BINARY_DIR}/lib/cmt")
 
-set(TARGET_INCLUDE_DIR "../../lib/cppmt")
-
-install(DIRECTORY "./include"
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
         DESTINATION "${TARGET_INCLUDE_DIR}"
         FILES_MATCHING PATTERN "*.h" )
 
