@@ -14,7 +14,7 @@ option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
 
-set(TARGET_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+set(TARGET_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
         DESTINATION "${TARGET_INCLUDE_DIR}"
