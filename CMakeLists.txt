@@ -14,11 +14,20 @@ option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
 
-#set(TARGET_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
+if (DEPENDENCY_PROJECT AND ROOT_INCLUDE_DIR)
+    set(TARGET_INCLUDE_DIR "${ROOT_INCLUDE_DIR}")
+elseif(NOT DEPENDENCY_PROJECT AND NOT ROOT_INCLUDE_DIR)
+    set(TARGET_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}")
+else()
+    message(FATAL_ERROR "
+        FATAL: Check ROOT_INCLUDE_DIR and DEPENDENCY_PROJECT defines.
+                       They both must be or set or unset.
+        ")
+endif()
 
-#install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-#        DESTINATION "${TARGET_INCLUDE_DIR}"
-#        FILES_MATCHING PATTERN "*.h" )
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        DESTINATION "${TARGET_INCLUDE_DIR}"
+        FILES_MATCHING PATTERN "*.h" )
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
