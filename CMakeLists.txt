@@ -35,6 +35,7 @@ endif()
 
 add_definitions ("-Wall")
 
+set(CMAKE_ENABLE_EXPORTS   ON)
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC  -std=c++11")
@@ -44,7 +45,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 set(LIBRARY_NAME  cmt)
 
-add_library (${LIBRARY_NAME} SHARED common.cpp gui.cpp
+add_library (${LIBRARY_NAME} SHARED ENABLE_EXPORTS common.cpp gui.cpp
     CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
     fastcluster/fastcluster.cpp getopt/getopt.cpp
     )
