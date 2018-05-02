@@ -24,7 +24,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     //Initialize detector and descriptor
 #if CV_MAJOR_VERSION > 2
     detector = cv::FastFeatureDetector::create();
-    descriptor = cv::BRISK::create();
+    descriptor = cv::BRISK::create(); //TODO cv::ORB::create();
 #else
     detector = FeatureDetector::create(str_detector);
     descriptor = DescriptorExtractor::create(str_descriptor);
