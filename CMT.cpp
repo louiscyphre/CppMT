@@ -10,16 +10,16 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial size
-    size_initial = rect.size();
+    context->size_initial = rect.size();
 
     //Remember initial image
-    im_prev = im_gray;
+    context->im_prev = im_gray;
 
     //Compute center of rect
     Point2f center = Point2f(rect.x + rect.width/2.0, rect.y + rect.height/2.0);
 
     //Initialize rotated bounding box
-    bb_rot = RotatedRect(center, size_initial, 0.0);
+    context->bb_rot = RotatedRect(center, context->size_initial, 0.0);
 
     //Initialize detector and descriptor
 #if CV_MAJOR_VERSION > 2
@@ -93,16 +93,17 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     }
 
     //Initialize matcher
-    matcher.initialize(points_normalized, descs_fg, classes_fg, descs_bg, center);
+    context->matcher.initialize(points_normalized, descs_fg, classes_fg,
+                              descs_bg, center);
 
     //Initialize consensus
-    consensus.initialize(points_normalized);
+    context->consensus.initialize(points_normalized);
 
     //Create initial set of active keypoints
     for (size_t i = 0; i < keypoints_fg.size(); i++)
     {
-        points_active.push_back(keypoints_fg[i].pt);
-        classes_active = classes_fg;
+        context->points_active.push_back(keypoints_fg[i].pt);
+        context->classes_active = classes_fg;
     }
 
     FILE_LOG(logDEBUG) << "CMT::initialize() return";
@@ -115,17 +116,18 @@ void CMT::processFrame(Mat im_gray) {
     //Track keypoints
     vector<Point2f> points_tracked;
     vector<unsigned char> status;
-    tracker.track(im_prev, im_gray, points_active, points_tracked, status);
+    tracker.track(context->im_prev, im_gray, context->points_active,
+                  points_tracked, status);
 
     FILE_LOG(logDEBUG) << points_tracked.size() << " tracked points.";
 
     //keep only successful classes
     vector<int> classes_tracked;
-    for (size_t i = 0; i < classes_active.size(); i++)
+    for (size_t i = 0; i < context->classes_active.size(); i++)
     {
         if (status[i])
         {
-            classes_tracked.push_back(classes_active[i]);
+            classes_tracked.push_back(context->classes_active[i]);
         }
 
     }
@@ -142,7 +144,8 @@ void CMT::processFrame(Mat im_gray) {
     //Match keypoints globally
     vector<Point2f> points_matched_global;
     vector<int> classes_matched_global;
-    matcher.matchGlobal(keypoints, descriptors, points_matched_global, classes_matched_global);
+    context->matcher.matchGlobal(keypoints, descriptors, points_matched_global,
+                         classes_matched_global);
 
     FILE_LOG(logDEBUG) << points_matched_global.size() << " points matched globally.";
 
@@ -157,7 +160,7 @@ void CMT::processFrame(Mat im_gray) {
     //Estimate scale and rotation from the fused points
     float scale;
     float rotation;
-    consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
+    context->consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
 
     FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
 
@@ -165,7 +168,7 @@ void CMT::processFrame(Mat im_gray) {
     Point2f center;
     vector<Point2f> points_inlier;
     vector<int> classes_inlier;
-    consensus.findConsensus(points_fused, classes_fused, scale, rotation,
+    context->consensus.findConsensus(points_fused, classes_fused, scale, rotation,
             center, points_inlier, classes_inlier);
 
     FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
@@ -174,26 +177,28 @@ void CMT::processFrame(Mat im_gray) {
     //Match keypoints locally
     vector<Point2f> points_matched_local;
     vector<int> classes_matched_local;
-    matcher.matchLocal(keypoints, descriptors, center, scale, rotation, points_matched_local, classes_matched_local);
+    context->matcher.matchLocal(keypoints, descriptors, center, scale, rotation,
+                        points_matched_local, classes_matched_local);
 
     FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
     //Clear active points
-    points_active.clear();
-    classes_active.clear();
+    context->points_active.clear();
+    context->classes_active.clear();
 
     //Fuse locally matched points and inliers
-    fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, points_active, classes_active);
+    fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, context->points_active, context->classes_active);
 //    points_active = points_fused;
 //    classes_active = classes_fused;
 
-    FILE_LOG(logDEBUG) << points_active.size() << " final fused points.";
+    FILE_LOG(logDEBUG) << context->points_active.size() << " final fused points.";
 
     //TODO: Use theta to suppress result
-    bb_rot = RotatedRect(center,  size_initial * scale, rotation/CV_PI * 180);
+    context->bb_rot = RotatedRect(center,  context->size_initial * scale,
+            rotation/CV_PI * 180);
 
     //Remember current image
-    im_prev = im_gray;
+    context->im_prev = im_gray;
 
     FILE_LOG(logDEBUG) << "CMT::processFrame() return";
 }
