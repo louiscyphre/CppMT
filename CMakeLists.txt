@@ -50,18 +50,3 @@ add_library (${LIBRARY_NAME} SHARED common.cpp gui.cpp
 
 target_link_libraries(${LIBRARY_NAME} ${OpenCV_LIBS})
 
-if(BUILD_TRAX_CLIENT)
-    set(TRAX_DIR "" CACHE FILEPATH "Path to trax")
-
-    include_directories(${TRAX_DIR}/include)
-
-    add_executable (trax_client cmt.so common.cpp gui.cpp
-            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-        fastcluster/fastcluster.cpp)
-
-    find_library(TRAX_LIBRARY NAMES trax HINTS "${TRAX_DIR}/lib")
-
-    target_link_libraries(trax_client ${OpenCV_LIBS} ${TRAX_LIBRARY})
-
-endif()
-
