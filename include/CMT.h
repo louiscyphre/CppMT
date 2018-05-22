@@ -9,13 +9,16 @@
 #include "Tracker.h"
 
 #include <opencv2/features2d/features2d.hpp>
-#include <memory>
 
 using cv::FeatureDetector;
 using cv::DescriptorExtractor;
 using cv::Ptr;
 using cv::RotatedRect;
 using cv::Size2f;
+
+#include <memory>
+
+using std::shared_ptr;
 
 namespace cmt {
 
@@ -42,11 +45,19 @@ namespace cmt {
 
         void initialize(const Mat im_gray, const Rect rect);
 
-        void switchContext(context_t *context) {
-            this->context = context;
+        shared_ptr<context_t *>
+        createContext(const Mat im_gray, const Rect rect) {
+            context_t* context = new context_t;
+            initialize(im_gray, rect);
+            shared_ptr<context_t *> ctx(context);
+            return ctx;
         }
 
         context_t* getContext() const { return context; }
+
+        void switchContext(context_t *context) {
+            this->context = context;
+        }
 
         void processFrame(const Mat im_gray);
 

@@ -46,8 +46,7 @@ set(LIBRARY_NAME  cmt)
 
 add_library (${LIBRARY_NAME} SHARED common.cpp gui.cpp
     CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-    fastcluster/fastcluster.cpp getopt/getopt.cpp
-    )
+    fastcluster/fastcluster.cpp)
 
 target_link_libraries(${LIBRARY_NAME} ${OpenCV_LIBS})
 
