@@ -55,8 +55,8 @@ if(BUILD_TRAX_CLIENT)
 
     include_directories(${TRAX_DIR}/include)
 
-    add_executable (trax_client cmt.so common.cpp gui.cpp trax.cpp
-        CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+    add_executable (trax_client cmt.so common.cpp gui.cpp
+            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
         fastcluster/fastcluster.cpp)
 
     find_library(TRAX_LIBRARY NAMES trax HINTS "${TRAX_DIR}/lib")

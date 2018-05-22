@@ -45,7 +45,7 @@ namespace cmt {
 
         void initialize(const Mat im_gray, const Rect rect);
 
-        shared_ptr<context_t *>
+        shared_ptr<context_t>
         createContext(const Mat im_gray, const Rect rect) {
             context_t* context = new context_t;
             initialize(im_gray, rect);
