@@ -10,8 +10,6 @@ FATAL: In-source builds are not allowed.
 ")
 endif()
 
-option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
-
 find_package(OpenCV REQUIRED)
 
 if (DEPENDENCY_PROJECT AND ROOT_INCLUDE_DIR)
