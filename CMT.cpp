@@ -5,7 +5,7 @@
 
 namespace cmt {
 
-void CMT::initialize(const Mat im_gray, const Rect rect)
+void CMT::initialize(const Mat &im_gray, const Rect &rect)
 {
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 

@@ -40,40 +40,40 @@ namespace cmt {
     } context_t;
 
     class CMT {
-    public:
-        CMT() : str_detector("FAST"), str_descriptor("BRISK") {};
+        public:
+            CMT() : str_detector("FAST"), str_descriptor("BRISK"), context(nullptr) {};
 
-        void initialize(const Mat im_gray, const Rect rect);
+            context_t* createNewContext(const Mat &im_gray, const Rect &rect) {
+                context = new context_t;
+                initialize(im_gray, rect);
+                return context;
+            }
 
-        shared_ptr<context_t>
-        createContext(const Mat im_gray, const Rect rect) {
-            context_t* context = new context_t;
-            initialize(im_gray, rect);
-            shared_ptr<context_t> ctx(context);
-            return ctx;
-        }
+            context_t* getContext() const { return context; }
 
-        context_t* getContext() const { return context; }
+            void switchContext(context_t *context) {
+                this->context = context;
+            }
 
-        void switchContext(context_t *context) {
-            this->context = context;
-        }
+            void processFrame(const Mat im_gray);
 
-        void processFrame(const Mat im_gray);
+            Fusion fusion;
+            Tracker tracker;
 
-        Fusion fusion;
-        Tracker tracker;
+            string str_detector;
+            string str_descriptor;
 
-        string str_detector;
-        string str_descriptor;
+        private:
+            Ptr<FeatureDetector> detector;
+            Ptr<DescriptorExtractor> descriptor;
 
-    private:
-        Ptr<FeatureDetector> detector;
-        Ptr<DescriptorExtractor> descriptor;
+            context_t* context;
 
-        context_t *context;
+            //TODO moved temporarily, fix
+            void initialize(const Mat &im_gray, const Rect &rect);
     };
 
 } /* namespace CMT */
 
 #endif /* end of include guard: CMT_H */
+
