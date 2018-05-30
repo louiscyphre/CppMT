@@ -28,7 +28,7 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
         FILES_MATCHING PATTERN "*.h" )
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 
 add_definitions ("-Wall")
