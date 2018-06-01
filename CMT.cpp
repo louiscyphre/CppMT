@@ -21,14 +21,8 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     //Initialize rotated bounding box
     context->bb_rot = RotatedRect(center, context->size_initial, 0.0);
 
-    //Initialize detector and descriptor
-#if CV_MAJOR_VERSION > 2
     detector = cv::FastFeatureDetector::create();
-    descriptor = cv::BRISK::create(); //TODO cv::ORB::create();
-#else
-    detector = FeatureDetector::create(str_detector);
-    descriptor = DescriptorExtractor::create(str_descriptor);
-#endif
+    descriptor = cv::ORB::create();
 
     //Get initial keypoints in whole image and compute their descriptors
     vector<KeyPoint> keypoints;

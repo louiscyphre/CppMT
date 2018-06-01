@@ -41,7 +41,8 @@ namespace cmt {
 
     class CMT {
         public:
-            CMT() : str_detector("FAST"), str_descriptor("BRISK"), context(nullptr) {};
+            CMT() : str_detector("FAST"), str_descriptor("ORB"), context
+                    (nullptr) {};
 
             context_t* createNewContext(const Mat &im_gray, const Rect &rect) {
                 context = new context_t;
