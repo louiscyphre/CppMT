@@ -11,7 +11,7 @@ using cv::Scalar;
 using cv::Size;
 
 // if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+#if ((CV_MAJOR_VERSION*100 + CV_MINOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
     using cv::cvWaitKey;
 #endif
 
@@ -52,7 +52,7 @@ static void onMouse(int event, int x, int y, int flags, void *param)
     im_select.copyTo(im_draw);
 
 // if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+#if ((CV_MAJOR_VERSION*100 + CV_MINOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
     #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP;
 #endif
 
@@ -96,7 +96,7 @@ Rect getRect(const Mat im, const string win_name)
     while(!br_set)
     {
 // if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+#if ((CV_MAJOR_VERSION*100 + CV_MINOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
         cv::cvWaitKey(10);
 #else
         cvWaitKey(10);
