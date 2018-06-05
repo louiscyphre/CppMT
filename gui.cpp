@@ -1,11 +1,26 @@
 #include "gui.h"
 
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
+// if OpenCV version greater than 3.4.1
+#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+    #define CV_BGR2GRAY cv::COLOR_BGR2GRAY
+    #define CV_CAP_PROP_POS_FRAMES cv::CAP_PROP_POS_FRAMES
+    #define CV_CAP_PROP_POS_MSEC cv::CAP_PROP_POS_MSEC
+    #define CV_GRAY2RGB cv::COLOR_GRAY2RGB
+    #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP
+#endif
 
 using cv::setMouseCallback;
 using cv::Point;
 using cv::Scalar;
 using cv::Size;
+
+// if OpenCV version greater than 3.4.1
+#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+    using cv::waitKey;
+#endif
 
 void screenLog(Mat im_draw, const string text)
 {
@@ -43,30 +58,36 @@ static void onMouse(int event, int x, int y, int flags, void *param)
     Mat im_draw;
     im_select.copyTo(im_draw);
 
+// if OpenCV version greater than 3.4.1
+#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+    #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP
+#endif
+
     if(event == CV_EVENT_LBUTTONUP && !tl_set)
     {
         tl = Point(x,y);
         tl_set = true;
     }
 
-    else if(event == CV_EVENT_MOUSEMOVE && tl_set)
-    {
-        rectangle(im_draw, tl, Point(x, y), Scalar(255,0,0));//, 1, 8, 0);
-    }
-
     else if(event == CV_EVENT_LBUTTONUP && tl_set)
     {
         br = Point(x,y);
         br_set = true;
+        screenLog(im_draw, "Initializing...");
     }
 
     if (!tl_set) screenLog(im_draw, "Click on the top left corner of the object");
-    else if (!br_set) screenLog(im_draw, "Click on the bottom right corner of the object");
+    else
+    {
+        rectangle(im_draw, tl, Point(x, y), Scalar(255,0,0));
+
+        if (!br_set) screenLog(im_draw, "Click on the bottom right corner of the object");
+    }
 
     imshow(win_name_, im_draw);
 }
 
-void getRect(const Mat im, const string win_name, Rect & rect)
+Rect getRect(const Mat im, const string win_name)
 {
 
     win_name_ = win_name;
@@ -81,13 +102,18 @@ void getRect(const Mat im, const string win_name, Rect & rect)
 
     while(!br_set)
     {
+// if OpenCV version greater than 3.4.1
+#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
+        cv::waitKey(10);
+#else
         cvWaitKey(10);
+#endif
     }
 
     setMouseCallback(win_name, NULL);
 
     im_select.release(); //im_select is in global scope, so we call release manually
 
-    rect = Rect(tl,br);
+    return Rect(tl,br);
 }
 
