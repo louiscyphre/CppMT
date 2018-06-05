@@ -5,8 +5,40 @@
 #include <string>
 #include <ctime>
 #include <iomanip>
+#include <chrono>
+ using std::chrono::time_point;
+ using std::chrono::system_clock;
+ using std::chrono::duration;
+ using std::chrono::duration_cast;
+ using std::ratio_multiply;
+ using std::ratio;
 
-#include <stdio.h>
+inline std::string NowTime()
+{
+    time_point<system_clock> time = system_clock::now();
+    auto allDuration = time.time_since_epoch();
+    typedef duration<int, ratio_multiply<std::chrono::hours::period,
+            ratio<24>>::type> Days;
+    Days days = duration_cast<Days>(allDuration);
+    allDuration -= days;
+    auto hours = duration_cast<std::chrono::hours>(allDuration);
+    allDuration -= hours;
+    auto minutes = duration_cast<std::chrono::minutes>(allDuration);
+    allDuration -= minutes;
+    auto seconds = duration_cast<std::chrono::seconds>(allDuration);
+    allDuration -= seconds;
+    auto milliseconds = duration_cast<std::chrono::milliseconds>(allDuration);
+    allDuration -= milliseconds;
+
+    std::stringstream tmp;
+    tmp << hours.count() << ":" << minutes.count() << ":"
+        << seconds.count() << "."
+        << std::setfill('0') << std::setw(3) << milliseconds.count();
+
+    std::string out;
+    tmp >> out;
+    return out;
+}
 
 enum TLogLevel {logERROR, logWARNING, logINFO, logDEBUG, logDEBUG1, logDEBUG2, logDEBUG3, logDEBUG4};
 
@@ -36,11 +68,10 @@ Log<T>::Log()
 template <typename T>
 std::ostringstream& Log<T>::Get(TLogLevel level)
 {
-    os << "- " << clock();
-    std::time_t time = std::time(nullptr);
-    os << std::put_time(std::localtime(&time), " %H:%M:%S %d.%m.%Y %Z");
-    os << " " << ToString(level) << ": ";
-    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
+    os << "[" << NowTime() << " UTC";
+    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t') << "] "
+       << "[" << ToString(level) << "] ";
+
     return os;
 }
 
