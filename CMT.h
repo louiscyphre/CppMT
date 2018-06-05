@@ -22,14 +22,10 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("BRISK"), str_descriptor("BRISK") {};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK") {};
     void initialize(const Mat im_gray, const Rect rect);
     void processFrame(const Mat im_gray);
 
-    vector<Point2f> points_active; //public for visualization purposes
-    RotatedRect bb_rot;
-
-private:
     Fusion fusion;
     Matcher matcher;
     Tracker tracker;
@@ -38,6 +34,10 @@ private:
     string str_detector;
     string str_descriptor;
 
+    vector<Point2f> points_active; //public for visualization purposes
+    RotatedRect bb_rot;
+
+private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
 

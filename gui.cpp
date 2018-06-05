@@ -1,6 +1,7 @@
 #include "gui.h"
 
 #include <opencv2/highgui/highgui.hpp>
+
 #include <opencv2/imgproc.hpp>
 
 // if OpenCV version greater than 3.4.1
@@ -10,7 +11,8 @@
     #define CV_CAP_PROP_POS_MSEC cv::CAP_PROP_POS_MSEC
     #define CV_GRAY2RGB cv::COLOR_GRAY2RGB
     #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP
-#endif
+
+
 
 using cv::setMouseCallback;
 using cv::Point;
