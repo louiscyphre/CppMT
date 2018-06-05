@@ -3,9 +3,42 @@
 
 #include <sstream>
 #include <string>
-#include <stdio.h>
+#include <ctime>
+#include <iomanip>
+#include <chrono>
+ using std::chrono::time_point;
+ using std::chrono::system_clock;
+ using std::chrono::duration;
+ using std::chrono::duration_cast;
+ using std::ratio_multiply;
+ using std::ratio;
 
-inline std::string NowTime();
+inline std::string NowTime()
+{
+    time_point<system_clock> time = system_clock::now();
+    auto allDuration = time.time_since_epoch();
+    typedef duration<int, ratio_multiply<std::chrono::hours::period,
+            ratio<24>>::type> Days;
+    Days days = duration_cast<Days>(allDuration);
+    allDuration -= days;
+    auto hours = duration_cast<std::chrono::hours>(allDuration);
+    allDuration -= hours;
+    auto minutes = duration_cast<std::chrono::minutes>(allDuration);
+    allDuration -= minutes;
+    auto seconds = duration_cast<std::chrono::seconds>(allDuration);
+    allDuration -= seconds;
+    auto milliseconds = duration_cast<std::chrono::milliseconds>(allDuration);
+    allDuration -= milliseconds;
+
+    std::stringstream tmp;
+    tmp << hours.count() << ":" << minutes.count() << ":"
+        << seconds.count() << "."
+        << std::setfill('0') << std::setw(3) << milliseconds.count();
+
+    std::string out;
+    tmp >> out;
+    return out;
+}
 
 enum TLogLevel {logERROR, logWARNING, logINFO, logDEBUG, logDEBUG1, logDEBUG2, logDEBUG3, logDEBUG4};
 
@@ -35,9 +68,10 @@ Log<T>::Log()
 template <typename T>
 std::ostringstream& Log<T>::Get(TLogLevel level)
 {
-    os << "- " << NowTime();
-    os << " " << ToString(level) << ": ";
-    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t');
+    os << "[" << NowTime() << " UTC";
+    os << std::string(level > logDEBUG ? level - logDEBUG : 0, '\t') << "] "
+       << "[" << ToString(level) << "] ";
+
     return os;
 }
 
@@ -99,7 +133,7 @@ inline FILE*& Output2FILE::Stream()
 }
 
 inline void Output2FILE::Output(const std::string& msg)
-{   
+{
     FILE* pStream = Stream();
     if (!pStream)
         return;
@@ -130,43 +164,5 @@ class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
     if (level > FILELOG_MAX_LEVEL) ;\
     else if (level > FILELog::ReportingLevel() || !Output2FILE::Stream()) ; \
     else FILELog().Get(level)
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-
-#include <windows.h>
-
-inline std::string NowTime()
-{
-    const int MAX_LEN = 200;
-    char buffer[MAX_LEN];
-    if (GetTimeFormatA(LOCALE_USER_DEFAULT, 0, 0, 
-            "HH':'mm':'ss", buffer, MAX_LEN) == 0)
-        return "Error in NowTime()";
-
-    char result[100] = {0};
-    static DWORD first = GetTickCount();
-    sprintf(result, "%s.%03ld", buffer, (long)(GetTickCount() - first) % 1000); 
-    return result;
-}
-
-#else
-
-#include <sys/time.h>
-
-inline std::string NowTime()
-{
-    char buffer[11];
-    time_t t;
-    time(&t);
-    tm r = {0};
-    strftime(buffer, sizeof(buffer), "%X", localtime_r(&t, &r));
-    struct timeval tv;
-    gettimeofday(&tv, 0);
-    char result[100] = {0};
-    sprintf(result, "%s.%03ld", buffer, (long)tv.tv_usec / 1000); 
-    return result;
-}
-
-#endif //WIN32
 
 #endif //__LOG_H__
