@@ -1,9 +1,7 @@
 #include "gui.h"
 
 #include <opencv2/highgui/highgui.hpp>
-#if CV_MAJOR_VERSION > 2
-# include <opencv2/imgproc.hpp>
-#endif
+#include <opencv2/imgproc.hpp>
 
 using cv::setMouseCallback;
 using cv::Point;
@@ -12,7 +10,7 @@ using cv::Size;
 
 // if OpenCV version greater than 3.4.1
 #if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
-    using cv::cvWaitKey;
+    using cv::waitKey;
 #endif
 
 void screenLog(Mat im_draw, const string text)
@@ -53,7 +51,7 @@ static void onMouse(int event, int x, int y, int flags, void *param)
 
 // if OpenCV version greater than 3.4.1
 #if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
-    #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP;
+    #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP
 #endif
 
     if(event == CV_EVENT_LBUTTONUP && !tl_set)
@@ -97,7 +95,7 @@ Rect getRect(const Mat im, const string win_name)
     {
 // if OpenCV version greater than 3.4.1
 #if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
-        cv::cvWaitKey(10);
+        cv::waitKey(10);
 #else
         cvWaitKey(10);
 #endif
