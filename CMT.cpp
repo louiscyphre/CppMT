@@ -18,9 +18,17 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     //Compute center of rect
     Point2f center = Point2f(rect.x + rect.width/2.0, rect.y + rect.height/2.0);
 
+    //Initialize rotated bounding box
+    bb_rot = RotatedRect(center, size_initial, 0.0);
+
     //Initialize detector and descriptor
+#if CV_MAJOR_VERSION > 2
+    detector = cv::FastFeatureDetector::create();
+    descriptor = cv::BRISK::create();
+#else
     detector = FeatureDetector::create(str_detector);
     descriptor = DescriptorExtractor::create(str_descriptor);
+#endif
 
     //Get initial keypoints in whole image and compute their descriptors
     vector<KeyPoint> keypoints;
@@ -69,6 +77,8 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     {
         points_fg.push_back(keypoints_fg[i].pt);
     }
+
+    FILE_LOG(logDEBUG) << points_fg.size() << " foreground points.";
 
     for (size_t i = 0; i < keypoints_bg.size(); i++)
     {
@@ -159,6 +169,7 @@ void CMT::processFrame(Mat im_gray) {
             center, points_inlier, classes_inlier);
 
     FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
+    FILE_LOG(logDEBUG) << "center " << center;
 
     //Match keypoints locally
     vector<Point2f> points_matched_local;

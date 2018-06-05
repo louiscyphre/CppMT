@@ -17,7 +17,12 @@ void Matcher::initialize(const vector<Point2f> & pts_fg_norm, const Mat desc_fg,
     this->num_bg_points = desc_bg.rows;
 
     //Form database by stacking background and foreground features
-    vconcat(desc_bg, desc_fg, database);
+    if (desc_bg.rows > 0 && desc_fg.rows > 0)
+        vconcat(desc_bg, desc_fg, database);
+    else if (desc_bg.rows > 0)
+        database = desc_bg;
+    else
+        database = desc_fg;
 
     //Extract descriptor length from features
     desc_length = database.cols*8;
@@ -90,6 +95,7 @@ void Matcher::matchLocal(const vector<KeyPoint> & keypoints, const Mat descripto
     //Perform local matching
     for (size_t i = 0; i < keypoints.size(); i++)
     {
+        //Normalize keypoint with respect to center
         Point2f location_rel = keypoints[i].pt - center;
 
         //Find potential indices for matching
@@ -104,6 +110,9 @@ void Matcher::matchLocal(const vector<KeyPoint> & keypoints, const Mat descripto
 
         }
 
+        //If there are no potential matches, continue
+        if (indices_potential.size() == 0) continue;
+
         //Build descriptor matrix and classes from potential indices
         Mat database_potential = Mat(indices_potential.size(), database.cols, database.type());
         for (size_t j = 0; j < indices_potential.size(); j++) {
@@ -112,25 +121,20 @@ void Matcher::matchLocal(const vector<KeyPoint> & keypoints, const Mat descripto
 
         //Find distances between descriptors
         vector<vector<DMatch> > matches;
-        bfmatcher->knnMatch(database_potential, descriptors.row(i), matches, 2);
+        bfmatcher->knnMatch(descriptors.row(i), database_potential, matches, 2);
 
-        //Perform matching
-        for (size_t j = 0; j < matches.size(); j++)
-        {
-            vector<DMatch> m = matches[j];
+        vector<DMatch> m = matches[0];
 
-            float distance1 = m[0].distance / desc_length;
-            float distance2 = m[1].distance / desc_length;
+        float distance1 = m[0].distance / desc_length;
+        float distance2 = m.size() > 1 ? m[1].distance / desc_length : 1;
 
-            int matched_class = classes[indices_potential[m[0].queryIdx]];
+        if (distance1 > thr_dist) continue;
+        if (distance1/distance2 > thr_ratio) continue;
 
-            if (distance1 > thr_dist) continue;
-            if (distance1/distance2 > thr_ratio) continue;
+        int matched_class = classes[indices_potential[m[0].trainIdx]];
 
-            points_matched.push_back(keypoints[i].pt);
-            classes_matched.push_back(matched_class);
-        }
-
+        points_matched.push_back(keypoints[i].pt);
+        classes_matched.push_back(matched_class);
     }
 
     FILE_LOG(logDEBUG) << "Matcher::matchLocal() return";
