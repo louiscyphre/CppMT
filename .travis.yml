@@ -1,17 +1,46 @@
+os: linux
+dist: xenial
+
 language: cpp
+
+cache: ccache
 
 compiler:
   - gcc
-  - clang
 
-install:
+env:
+  global:
+      - MAKEFLAGS="-j 2"
+
+before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y -qq libopencv-dev
+  - sudo apt-get install -y -qq g++ cmake git ccache build-essential pkg-config libgtk2.0-dev libgtk-3-dev libtbb-dev python-dev python-numpy python-scipy libjasper-dev libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libdc1394-22-dev libv4l-dev libavresample-dev libavresample-dev libgphoto2-dev gtk+-3.0-dev libeigen3-dev libunicap2-dev libunicap-dev libunicap-dev libopenblas-dev libopenblas-dev liblapack-dev libatlas-dev liblapacke-dev libclblas-dev libatlas-base-dev libgstreamer1.0-dev ocl-icd-opencl-dev libmrpt-dev autopoint gfortran-multilib distcc dh-make distccmon-gnome distcc-pump dmucs libmpfr-dev libbonobo2-bin gnome-mime-data gamin libgnomevfs2-bin libgnomevfs2-extra
 
 before_script:
-  - mkdir build
-  - cd build
-  - cmake ..
+  - mkdir /home/travis/build/src
+  - mkdir /home/travis/build/src/ocvsrc
+  - cd /home/travis/build/src/ocvsrc
+  - git clone https://github.com/opencv/opencv.git .
+  - git checkout master
+  
+  - cd /home/travis/build
+  - mkdir /home/travis/build/bin
+  - mkdir /home/travis/build/bin/lib
+  - mkdir /home/travis/build/bin/lib/opencv
+  - cd /home/travis/build/bin/lib/opencv
+  
+  - cmake ../../../src/ocvsrc -DCMAKE_INSTALL_PREFIX=/home/travis/build -DCMAKE_SOURCE_DIR=/home/travis/build/src/ocvsrc  -DCMAKE_BINARY_DIR=/home/travis/build/bin/lib/opencv -DENABLE_FAST_MATH=ON -DWITH_EIGEN=1 -DWITH_TBB=ON -DWITH_OPENCL=1 -DENABLE_BUILD_HARDENING=ON -DWITH_MATLAB=ON -DWITH_GTK=ON -DWITH_GTK_2_X=ON
+  - make  
+  - make install
 
+  - mkdir /home/travis/build/bin/lib/cmt
+  - cd    /home/travis/build/bin/lib/cmt
+
+  - cmake /home/travis/build/louiscyphre/cmt -DCMAKE_INSTALL_PREFIX=/home/travis/build -DOpenCV_DIR=/home/travis/build/bin/lib/opencv -DCMAKE_SOURCE_DIR=/home/travis/build/louiscyphre/cmt  -DCMAKE_BINARY_DIR=/home/travis/build/bin/lib/cmt -DROOT_INCLUDE_DIR=/home/travis/build/bin/lib/cmt -DDEPENDENCY_PROJECT=ON
+
+after_failure:
+ - rm -rf /home/travis/build/src
+ - rm -rf /home/travis/build/bin
+ - rm -rf /home/travis/build/louiscyphre
 script:
   - make
