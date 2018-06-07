@@ -1,4 +1,4 @@
-# cmt [![Build Status](https://travis-ci.org/louiscyphre/cmt/cmt.svg)](https://travis-ci.org/louiscyphre/cmt)
+# cmt [![Build Status](https://api.travis-ci.org/louiscyphre/cmt.png)](https://travis-ci.org/louiscyphre/cmt)
 
 # Introduction
 **cmt** (originally CppMT) is a method for visual object tracking. It is the C++ implementation of **cmt** that was originally developed in Python by George Nebehay.
