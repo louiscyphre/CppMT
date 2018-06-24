@@ -73,6 +73,7 @@ void Consensus::estimateScaleRotation(const vector<Point2f> & points, const vect
                 if (estimate_rotation)
                 {
                     float angle = atan2(v.y,v.x);
+
                     float angle_original = angles_pairwise.at<float>(classes[i],classes[j]);
                     float change_angle = angle - angle_original;
 
@@ -126,7 +127,7 @@ void Consensus::findConsensus(const vector<Point2f> & points, const vector<int> 
     t_index N = points.size();
 
     float * D = new float[N*(N-1)/2]; //This is a lot of memory, so we put it on the heap
-    cluster_result Z(N-1);
+    cluster_result Z(N);
 
     //Compute pairwise distances between votes
     int index = 0;
