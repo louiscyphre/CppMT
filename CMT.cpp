@@ -16,7 +16,8 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     context->im_prev = im_gray;
 
     //Compute center of rect
-    Point2f center = Point2f(rect.x + rect.width/2.0, rect.y + rect.height/2.0);
+    center = Point2f(rect.x + rect.width/2.0, rect.y + rect.height/2.0);
+    context->center_initial = center;
 
     //Initialize rotated bounding box
     context->bb_rot = RotatedRect(center, context->size_initial, 0.0);
@@ -152,14 +153,11 @@ void CMT::processFrame(Mat im_gray) {
     FILE_LOG(logDEBUG) << points_fused.size() << " points fused.";
 
     //Estimate scale and rotation from the fused points
-    float scale;
-    float rotation;
     context->consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
 
     FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
 
     //Find inliers and the center of their votes
-    Point2f center;
     vector<Point2f> points_inlier;
     vector<int> classes_inlier;
     context->consensus.findConsensus(points_fused, classes_fused, scale, rotation,
@@ -182,8 +180,9 @@ void CMT::processFrame(Mat im_gray) {
 
     //Fuse locally matched points and inliers
     fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, context->points_active, context->classes_active);
-//    points_active = points_fused;
-//    classes_active = classes_fused;
+    //FIXME to check, this seems work better
+    //context->points_active = points_fused;
+    //context->classes_active = classes_fused;
 
     FILE_LOG(logDEBUG) << context->points_active.size() << " final fused points.";
 

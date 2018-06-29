@@ -27,11 +27,12 @@ namespace cmt {
         Matcher matcher;
         Consensus consensus;
 
-        vector<Point2f> points_active;
+        vector <Point2f> points_active;
         vector<int> classes_active;
         RotatedRect bb_rot;
 
         Size2f size_initial;
+        Point2f center_initial;
 
         float theta;
 
@@ -42,7 +43,8 @@ namespace cmt {
     class CMT {
         public:
             CMT() : str_detector("FAST"), str_descriptor("ORB"), context
-                    (nullptr) {};
+                    (nullptr), scale(0.0f), rotation(0.0f),
+                    center(0.0f, 0.0f) {};
 
             context_t* createNewContext(const Mat &im_gray, const Rect &rect) {
                 context = new context_t;
@@ -52,7 +54,17 @@ namespace cmt {
 
             context_t* getContext() const { return context; }
 
-            void switchContext(context_t *context) {
+            float getScale() const { return scale; }
+
+            float getRotation() const { return rotation; }
+
+            Point2f getCenter() const { return center; }
+
+            Point2f getInitialCenter() const { return context->center_initial; }
+
+            Size2f getInitialRectSize() const { return context->size_initial; }
+
+            void switchContext(context_t* context) {
                 this->context = context;
             }
 
@@ -65,10 +77,13 @@ namespace cmt {
             string str_descriptor;
 
         private:
-            Ptr<FeatureDetector> detector;
-            Ptr<DescriptorExtractor> descriptor;
+            Ptr <FeatureDetector> detector;
+            Ptr <DescriptorExtractor> descriptor;
 
             context_t* context;
+            float scale;
+            float rotation;
+            Point2f center;
 
             //TODO moved temporarily, fix
             void initialize(const Mat &im_gray, const Rect &rect);
