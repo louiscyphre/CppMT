@@ -2,6 +2,7 @@
 
 #define CMT_H
 
+#include "cmt_config.h"
 #include "common.h"
 #include "Consensus.h"
 #include "Fusion.h"
@@ -31,8 +32,7 @@ namespace cmt {
         vector<int> classes_active;
         RotatedRect bb_rot;
 
-        Size2f size_initial;
-        Point2f center_initial;
+        RotatedRect initialMark;
 
         float theta;
 
@@ -42,8 +42,8 @@ namespace cmt {
 
     class CMT {
         public:
-            CMT() : str_detector("FAST"), str_descriptor("ORB"), context
-                    (nullptr), scale(0.0f), rotation(0.0f),
+            CMT() : str_detector(DETECTOR_STR), str_descriptor(DESCRIPTOR_STR),
+                    context(nullptr), scale(0.0f), rotation(0.0f),
                     center(0.0f, 0.0f) {};
 
             context_t* createNewContext(const Mat &im_gray, const Rect &rect) {
@@ -60,9 +60,8 @@ namespace cmt {
 
             Point2f getCenter() const { return center; }
 
-            Point2f getInitialCenter() const { return context->center_initial; }
-
-            Size2f getInitialRectSize() const { return context->size_initial; }
+            RotatedRect getInitialMark() const { return context->initialMark; }
+            RotatedRect getCurrentMark() const { return context->bb_rot; }
 
             void switchContext(context_t* context) {
                 this->context = context;

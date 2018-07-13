@@ -1,0 +1,14 @@
+/* -------------------------------------------------------------------------- */
+/* - File:                   cmt_config.h.in
+ * - Created by:             <https://github.com/louiscyphre>               - */
+/* - Creation date and time: 07:14 13.07.2018                               - */
+/* -------------------------------------------------------------------------- */
+#ifndef CMT_CONFIG_H
+
+#define CMT_CONFIG_H
+
+#define DESCRIPTORS_T @DESCRIPTORS_TYPE@
+#define DETECTOR_STR "@DETECTOR_STR@"
+#define DESCRIPTOR_STR "@DETECTOR_STR@"
+
+#endif

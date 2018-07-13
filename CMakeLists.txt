@@ -2,6 +2,12 @@ project (CMT)
 
 cmake_minimum_required (VERSION 2.6)
 
+if (NOT DESCRIPTORS_TYPE)
+    set(DESCRIPTORS_TYPE cv::ORB)
+    #set(DESCRIPTORS_TYPE cv::BRISK)
+    set(DETECTOR_STR ${DESCRIPTORS_TYPE})
+endif()
+
 # Disable in-source builds to prevent source tree corruption.
 if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
   message(FATAL_ERROR "
@@ -37,8 +43,15 @@ set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC  -std=c++11")
 
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file (
+        "${CMAKE_SOURCE_DIR}/include/cmt_config.h.in"
+        "${CMAKE_BINARY_DIR}/include/cmt_config.h")
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 
 set(LIBRARY_NAME  cmt)
 
