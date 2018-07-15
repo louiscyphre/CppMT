@@ -8,11 +8,6 @@ using cv::Point;
 using cv::Scalar;
 using cv::Size;
 
-// if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
-    using cv::waitKey;
-#endif
-
 void screenLog(Mat im_draw, const string text)
 {
     int font = cv::FONT_HERSHEY_SIMPLEX;
@@ -49,18 +44,13 @@ static void onMouse(int event, int x, int y, int flags, void *param)
     Mat im_draw;
     im_select.copyTo(im_draw);
 
-// if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
-    #define CV_EVENT_LBUTTONUP cv::EVENT_LBUTTONUP
-#endif
-
-    if(event == CV_EVENT_LBUTTONUP && !tl_set)
+    if(event == cv::EVENT_LBUTTONUP && !tl_set)
     {
         tl = Point(x,y);
         tl_set = true;
     }
 
-    else if(event == CV_EVENT_LBUTTONUP && tl_set)
+    else if(event == cv::EVENT_LBUTTONUP && tl_set)
     {
         br = Point(x,y);
         br_set = true;
@@ -93,12 +83,7 @@ Rect getRect(const Mat im, const string win_name)
 
     while(!br_set)
     {
-// if OpenCV version greater than 3.4.1
-#if ((CV_MAJOR_VERSION*100 + CV_MAJOR_VERSION*10 + CV_SUBMINOR_VERSION) > 341)
         cv::waitKey(10);
-#else
-        cvWaitKey(10);
-#endif
     }
 
     setMouseCallback(win_name, NULL);

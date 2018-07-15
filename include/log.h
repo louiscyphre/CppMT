@@ -12,7 +12,7 @@
  using std::chrono::duration_cast;
  using std::ratio_multiply;
  using std::ratio;
-
+#include "debug_utils.h"
 inline std::string NowTime()
 {
     time_point<system_clock> time = system_clock::now();
@@ -161,6 +161,7 @@ class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
 #endif
 
 #define FILE_LOG(level) \
+    LOG();\
     if (level > FILELOG_MAX_LEVEL) ;\
     else if (level > FILELog::ReportingLevel() || !Output2FILE::Stream()) ; \
     else FILELog().Get(level)

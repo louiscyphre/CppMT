@@ -1,12 +1,6 @@
 project (CMT)
 
-cmake_minimum_required (VERSION 2.6)
-
-if (NOT DESCRIPTORS_TYPE)
-    set(DESCRIPTORS_TYPE cv::ORB)
-    #set(DESCRIPTORS_TYPE cv::BRISK)
-    set(DETECTOR_STR ${DESCRIPTORS_TYPE})
-endif()
+cmake_minimum_required (VERSION 3.1.3)
 
 # Disable in-source builds to prevent source tree corruption.
 if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
@@ -15,6 +9,16 @@ FATAL: In-source builds are not allowed.
        You should create a separate directory for build files.
 ")
 endif()
+
+set(CMAKE_COLOR_MAKEFILE   ON)
+
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenCV REQUIRED)
 
@@ -37,11 +41,26 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
 endif()
 
-add_definitions ("-Wall")
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-DDEBUG)
+    set(DEBUG TRUE)
+    set(PROJECT_TARGET_FILES common.cpp gui.cpp
+            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+            fastcluster/fastcluster.cpp)# debug/gdb.c)
+else()
+    set(PROJECT_TARGET_FILES common.cpp gui.cpp
+            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+            fastcluster/fastcluster.cpp)
+endif()
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC  -std=c++11")
+if (NOT DESCRIPTORS_TYPE)
+    set(DESCRIPTORS_TYPE cv::ORB)
+    #set(DESCRIPTORS_TYPE cv::BRISK)
+    set(DETECTOR_STR ${DESCRIPTORS_TYPE})
+endif()
+
+set(LIBRARY_NAME  cmt)
+
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -53,11 +72,13 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-set(LIBRARY_NAME  cmt)
 
-add_library (${LIBRARY_NAME} SHARED common.cpp gui.cpp
-    CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-    fastcluster/fastcluster.cpp)
+add_library (${LIBRARY_NAME} SHARED ${PROJECT_TARGET_FILES})
 
-#target_link_libraries(${LIBRARY_NAME} ${OpenCV_LIBS})
+target_compile_options(${LIBRARY_NAME} PUBLIC -Wall -Wextra -pedantic)
+target_compile_options(${LIBRARY_NAME} PRIVATE -fPIC)
+
+if(NOT DEPENDENCY_PROJECT)
+    target_link_libraries(${LIBRARY_NAME} ${OpenCV_LIBS})
+endif()
 
