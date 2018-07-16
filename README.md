@@ -32,7 +32,8 @@ If you use our algorithm in scientific work, please cite this publication:
 ```
 
 # Dependencies
-* OpenCV (>= 2.4.8), OpenCV 3.4.1 and upper is supported
+* OpenCV 3.4.2 and upper (I tend to use the latest code)
+* C++17 standart compliance
 
 # Building
 **cmt** uses cmake for building.
