@@ -86,7 +86,7 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
 
     //Initialize matcher
     context->matcher.initialize(points_normalized, descs_fg, classes_fg,
-                              descs_bg, center);
+                                descs_bg);
 
     //Initialize consensus
     context->consensus.initialize(points_normalized);

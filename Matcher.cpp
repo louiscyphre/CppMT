@@ -6,7 +6,7 @@ using cv::DMatch;
 namespace cmt {
 
 void Matcher::initialize(const vector<Point2f> & pts_fg_norm, const Mat desc_fg, const vector<int> & classes_fg,
-        const Mat desc_bg, const Point2f center)
+        const Mat desc_bg)
 {
     FILE_LOG(logDEBUG) << "Matcher::initialize() call";
 

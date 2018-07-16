@@ -161,7 +161,9 @@ class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
 #endif
 
 #define FILE_LOG(level) \
-    LOG();\
+    if (level == logDEBUG4) {\
+        LOG();\
+    }\
     if (level > FILELOG_MAX_LEVEL) ;\
     else if (level > FILELog::ReportingLevel() || !Output2FILE::Stream()) ; \
     else FILELog().Get(level)
