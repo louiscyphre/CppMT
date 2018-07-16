@@ -44,11 +44,11 @@ endif()
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(-DDEBUG)
     set(DEBUG TRUE)
-    set(PROJECT_TARGET_FILES common.cpp gui.cpp
+    set(PROJECT_TARGET_FILES common.cpp
             CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
             fastcluster/fastcluster.cpp)# debug/gdb.c)
 else()
-    set(PROJECT_TARGET_FILES common.cpp gui.cpp
+    set(PROJECT_TARGET_FILES common.cpp
             CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
             fastcluster/fastcluster.cpp)
 endif()
