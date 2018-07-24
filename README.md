@@ -9,7 +9,7 @@ on Linux, Windows and OS X. You can check the original fork for more info.
 # Remark
 I've adapted this software to be the dependency for other project and use it as a module (cmake of parent project linking it as .so executable), if you want to use it please take a look at the class CMT which now has functions
 ~~~
-    context_t* createNewContext(const Mat &im_gray, const Rect &rect);
+    context_t* createContext(const Mat &im_gray, const Rect &rect);
     context_t* getContext() const { return context; }
     void switchContext(context_t *context)
     void processFrame(const Mat im_gray);// this was also before

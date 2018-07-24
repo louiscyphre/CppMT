@@ -28,7 +28,7 @@ namespace cmt {
         Matcher matcher;
         Consensus consensus;
 
-        vector <Point2f> points_active;
+        vector<Point2f> points_active;
         vector<int> classes_active;
         RotatedRect bb_rot;
 
@@ -46,13 +46,19 @@ namespace cmt {
                     context(nullptr), scale(0.0f), rotation(0.0f),
                     center(0.0f, 0.0f) {};
 
-            context_t* createNewContext(const Mat &im_gray, const Rect &rect) {
+            context_t* createContext(const Mat &im_gray, const Rect &rect) {
                 context = new context_t;
                 initialize(im_gray, rect);
                 return context;
             }
 
-            context_t* getContext() const { return context; }
+            const vector<Point2f> getPoints() const {
+                return context->points_active;
+            }
+
+            const vector<int> getClasses() const {
+                return context->classes_active;
+            }
 
             float getScale() const { return scale; }
 

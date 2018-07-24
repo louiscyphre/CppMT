@@ -15,7 +15,8 @@ namespace cmt {
 class Matcher
 {
 public:
-    Matcher() : thr_dist(0.25), thr_ratio(0.8), thr_cutoff(20) {};
+        Matcher() : thr_dist(0.25), thr_ratio(0.8), thr_cutoff(20) {};
+        //Matcher() : thr_dist(0.01), thr_ratio(0.75), thr_cutoff(15) {};
     void initialize(const vector<Point2f> & pts_fg_norm, const Mat desc_fg, const vector<int> & classes_fg,
             const Mat desc_bg);
     void matchGlobal(const vector<KeyPoint> & keypoints, const Mat descriptors,

@@ -2,7 +2,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
+#include <iostream>
 namespace cmt {
 
 void CMT::initialize(const Mat &im_gray, const Rect &rect)
@@ -171,15 +171,36 @@ void CMT::processFrame(Mat im_gray) {
 
     FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
-    //Clear active points
-    context->points_active.clear();
-    context->classes_active.clear();
+    //for (auto i: context->classes_active) {
+    //    std::cout << i << ' ';
+    //}
+    //std::cout << std::endl;
 
+    //for (auto i: context->points_active) {
+    //    std::cout << i << ' ';
+    //}
+    //std::cout << std::endl;
+
+    //Clear active points
+    //context->points_active.clear();
+    //context->classes_active.clear();
     //Fuse locally matched points and inliers
-    fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, context->points_active, context->classes_active);
-    //FIXME to check, this seems work better
-    context->points_active = points_fused;
-    context->classes_active = classes_fused;
+    //fusion.preferFirst(points_matched_local, classes_matched_local,
+                      //points_inlier, classes_inlier, context->points_active,
+                       //context->classes_active);
+    //FIXME//TODO to check, this seems work better
+    context->points_active = points_inlier;
+    context->classes_active = classes_inlier;
+
+    //for (auto i: context->classes_active) {
+    //    std::cout << i << ' ';
+    //}
+    //std::cout << std::endl;
+
+    //for (auto i: context->points_active) {
+    //    std::cout << i << ' ';
+    //}
+    //std::cout << std::endl;
 
     FILE_LOG(logDEBUG) << context->points_active.size() << " final fused points.";
 
