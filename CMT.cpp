@@ -18,7 +18,7 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     //Initialize rotated bounding box
     context->bb_rot = RotatedRect(center, rect.size(), 0.0);
     context->initialMark = context->bb_rot;
-
+    //TODO check cornerSubPix() detection possibility
     detector = cv::FastFeatureDetector::create();
     descriptor = DESCRIPTORS_T::create();
 
