@@ -18,13 +18,12 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     //Initialize rotated bounding box
     context->bb_rot = RotatedRect(center, rect.size(), 0.0);
     context->initialMark = context->bb_rot;
-    //TODO check cornerSubPix() detection possibility
-    detector = cv::FastFeatureDetector::create();
-    descriptor = DESCRIPTORS_T::create();
-
-    //Get initial keypoints in whole image and compute their descriptors
+    
+    vector<Point2f> coords2f;
+    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
+        POINTS_QUALITY_LEVEL, MIN_DISTANCE);
     vector<KeyPoint> keypoints;
-    detector->detect(im_gray, keypoints);
+    cv::KeyPoint::convert(coords2f, keypoints);
 
     //Divide keypoints into foreground and background keypoints according to selection
     vector<KeyPoint> keypoints_fg;
@@ -58,6 +57,8 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     //Compute foreground/background features
     Mat descs_fg;
     Mat descs_bg;
+
+    descriptor = DESCRIPTORS_T::create();
     descriptor->compute(im_gray, keypoints_fg, descs_fg);
     descriptor->compute(im_gray, keypoints_bg, descs_bg);
 
@@ -123,10 +124,12 @@ void CMT::processFrame(Mat im_gray) {
         }
 
     }
-
     //Detect keypoints, compute descriptors
+    vector<Point2f> coords2f;
+    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
+                            POINTS_QUALITY_LEVEL, MIN_DISTANCE);
     vector<KeyPoint> keypoints;
-    detector->detect(im_gray, keypoints);
+    cv::KeyPoint::convert(coords2f, keypoints);
 
     FILE_LOG(logDEBUG) << keypoints.size() << " keypoints found.";
 
@@ -186,8 +189,8 @@ void CMT::processFrame(Mat im_gray) {
     //context->classes_active.clear();
     //Fuse locally matched points and inliers
     //fusion.preferFirst(points_matched_local, classes_matched_local,
-                      //points_inlier, classes_inlier, context->points_active,
-                       //context->classes_active);
+    //                  points_inlier, classes_inlier, context->points_active,
+    //                   context->classes_active);
     //FIXME//TODO to check, this seems work better
     context->points_active = points_inlier;
     context->classes_active = classes_inlier;

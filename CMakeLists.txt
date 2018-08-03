@@ -59,6 +59,18 @@ if (NOT DESCRIPTORS_TYPE)
     set(DETECTOR_STR ${DESCRIPTORS_TYPE})
 endif()
 
+if (NOT MAX_POINTS)
+    set(MAX_POINTS 5000)
+endif()
+
+if (NOT POINTS_QUALITY_LEVEL)
+    set(POINTS_QUALITY_LEVEL 0.001)
+endif()
+
+if (NOT MIN_DISTANCE)
+    set(MIN_DISTANCE 5)
+endif()
+
 set(LIBRARY_NAME  cmt)
 
 
