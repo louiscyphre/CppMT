@@ -5,7 +5,8 @@
 #include <iostream>
 namespace cmt {
 
-void CMT::initialize(const Mat &im_gray, const Rect &rect)
+void CMT::initialize(const Mat &im_gray, const Rect &rect, const
+std::vector<cv::KeyPoint> &points)
 {
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
@@ -18,12 +19,17 @@ void CMT::initialize(const Mat &im_gray, const Rect &rect)
     //Initialize rotated bounding box
     context->bb_rot = RotatedRect(center, rect.size(), 0.0);
     context->initialMark = context->bb_rot;
-    
-    vector<Point2f> coords2f;
-    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
-        POINTS_QUALITY_LEVEL, MIN_DISTANCE);
-    vector<KeyPoint> keypoints;
-    cv::KeyPoint::convert(coords2f, keypoints);
+
+    vector<cv::KeyPoint> keypoints;
+
+    if (points.size() == 0) {
+        vector<Point2f> coords2f;
+        cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
+                                POINTS_QUALITY_LEVEL, MIN_DISTANCE);
+        cv::KeyPoint::convert(coords2f, keypoints);
+    } else {
+        keypoints = points;
+    }
 
     //Divide keypoints into foreground and background keypoints according to selection
     vector<KeyPoint> keypoints_fg;
@@ -126,8 +132,8 @@ void CMT::processFrame(Mat im_gray) {
     }
     //Detect keypoints, compute descriptors
     vector<Point2f> coords2f;
-    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
-                            POINTS_QUALITY_LEVEL, MIN_DISTANCE);
+    //The more points is better, later we will remove unnecessary points
+    cv::goodFeaturesToTrack(im_gray, coords2f, 10000, 0.0001, 3);
     vector<KeyPoint> keypoints;
     cv::KeyPoint::convert(coords2f, keypoints);
 

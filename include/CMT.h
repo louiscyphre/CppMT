@@ -46,9 +46,10 @@ namespace cmt {
                     context(nullptr), scale(0.0f), rotation(0.0f),
                     center(0.0f, 0.0f) {};
 
-            context_t* createContext(const Mat &im_gray, const Rect &rect) {
+            context_t* createContext(const Mat &im_gray, const Rect &rect,
+              const std::vector<cv::KeyPoint> &points = std::vector<cv::KeyPoint>()) {
                 context = new context_t;
-                initialize(im_gray, rect);
+                initialize(im_gray, rect, points);
                 return context;
             }
 
@@ -91,7 +92,8 @@ namespace cmt {
             Point2f center;
 
             //TODO moved temporarily, fix
-            void initialize(const Mat &im_gray, const Rect &rect);
+            void initialize(const Mat &im_gray, const Rect &rect,
+                            const std::vector<cv::KeyPoint> &points);
     };
 
 } /* namespace CMT */

@@ -10,8 +10,14 @@ on Linux, Windows and OS X. You can check the original fork for more info.
 I've adapted this software to be the dependency for other project and use it as a module (cmake of parent project linking it as .so executable), if you want to use it please take a look at the class CMT which now has functions
 ~~~
     context_t* createContext(const Mat &im_gray, const Rect &rect);
-    context_t* getContext() const { return context; }
-    void switchContext(context_t *context)
+    const vector<Point2f> getPoints() const;
+    const vector<int> getClasses() const;
+    float getScale() const;
+    float getRotation() const;
+    Point2f getCenter() const;
+    RotatedRect getInitialMark() const;
+    RotatedRect getCurrentMark() const;
+    switchContext(context_t* context);
     void processFrame(const Mat im_gray);// this was also before
 ~~~
 **context_t** is a type for struct, which can be found in CMT.h
@@ -33,7 +39,7 @@ If you use our algorithm in scientific work, please cite this publication:
 
 # Dependencies
 * OpenCV 3.4.2 and upper (I tend to use the latest code)
-* C++17 standart compliance
+* C++17 standard compliance
 
 # Building
 **cmt** uses cmake for building.
