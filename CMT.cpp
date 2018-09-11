@@ -25,7 +25,7 @@ std::vector<cv::KeyPoint> &points)
     if (points.size() == 0) {
         vector<Point2f> coords2f;
         cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
-                                POINTS_QUALITY_LEVEL, MIN_DISTANCE);
+                                POINTS_QUALITY_LEVEL_INIT, MIN_DISTANCE);
         cv::KeyPoint::convert(coords2f, keypoints);
     } else {
         keypoints = points;
@@ -133,7 +133,8 @@ void CMT::processFrame(Mat im_gray) {
     //Detect keypoints, compute descriptors
     vector<Point2f> coords2f;
     //The more points is better, later we will remove unnecessary points
-    cv::goodFeaturesToTrack(im_gray, coords2f, 10000, 0.0001, 3);
+    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
+        POINTS_QUALITY_LEVEL_DETECT, MIN_DISTANCE);
     vector<KeyPoint> keypoints;
     cv::KeyPoint::convert(coords2f, keypoints);
 
@@ -180,16 +181,6 @@ void CMT::processFrame(Mat im_gray) {
 
     FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
-    //for (auto i: context->classes_active) {
-    //    std::cout << i << ' ';
-    //}
-    //std::cout << std::endl;
-
-    //for (auto i: context->points_active) {
-    //    std::cout << i << ' ';
-    //}
-    //std::cout << std::endl;
-
     //Clear active points
     //context->points_active.clear();
     //context->classes_active.clear();
@@ -200,16 +191,6 @@ void CMT::processFrame(Mat im_gray) {
     //FIXME//TODO to check, this seems work better
     context->points_active = points_inlier;
     context->classes_active = classes_inlier;
-
-    //for (auto i: context->classes_active) {
-    //    std::cout << i << ' ';
-    //}
-    //std::cout << std::endl;
-
-    //for (auto i: context->points_active) {
-    //    std::cout << i << ' ';
-    //}
-    //std::cout << std::endl;
 
     FILE_LOG(logDEBUG) << context->points_active.size() << " final fused points.";
 
