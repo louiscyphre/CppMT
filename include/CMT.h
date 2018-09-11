@@ -76,15 +76,15 @@ namespace cmt {
 
             void processFrame(const Mat im_gray);
 
+        private:
+            Ptr <FeatureDetector> detector;
+            Ptr <DescriptorExtractor> descriptor;
+
             Fusion fusion;
             Tracker tracker;
 
             string str_detector;
             string str_descriptor;
-
-        private:
-            Ptr <FeatureDetector> detector;
-            Ptr <DescriptorExtractor> descriptor;
 
             context_t* context;
             float scale;
