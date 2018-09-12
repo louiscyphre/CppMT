@@ -27,13 +27,14 @@ inline std::string NowTime()
     allDuration -= minutes;
     auto seconds = duration_cast<std::chrono::seconds>(allDuration);
     allDuration -= seconds;
-    auto milliseconds = duration_cast<std::chrono::milliseconds>(allDuration);
-    allDuration -= milliseconds;
+    auto microseconds = duration_cast<std::chrono::microseconds>(allDuration);
+    allDuration -= microseconds;
 
     std::stringstream tmp;
-    tmp << hours.count() << ":" << minutes.count() << ":"
-        << seconds.count() << "."
-        << std::setfill('0') << std::setw(3) << milliseconds.count();
+    tmp << std::setfill('0') << std::setw(2) << hours.count() << ":"
+        << std::setfill('0') << std::setw(2) << minutes.count() << ":"
+        << std::setfill('0') << std::setw(2) << seconds.count() << "."
+        << std::setfill('0') << std::setw(6) << microseconds.count();
 
     std::string out;
     tmp >> out;
