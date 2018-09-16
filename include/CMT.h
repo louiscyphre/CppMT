@@ -54,7 +54,16 @@ namespace cmt {
             }
 
             const vector<Point2f> getPoints() const {
-                return context->points_active;
+                //TODO//FIXME check denormalisation here
+
+                std::vector<Point2f> points;
+                points = context->points_active;
+
+                auto denormaliser = [&points](Point2f point) {
+                    point += center;
+                };
+                std::for_each(points.begin(), points.end(), denormaliser);
+                return points;
             }
 
             const vector<int> getClasses() const {
