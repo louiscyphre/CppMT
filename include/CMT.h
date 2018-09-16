@@ -59,7 +59,7 @@ namespace cmt {
                 std::vector<Point2f> points;
                 points = context->points_active;
 
-                auto denormaliser = [&points](Point2f point) {
+                auto denormaliser = [&points, this](Point2f point) {
                     point += center;
                 };
                 std::for_each(points.begin(), points.end(), denormaliser);
