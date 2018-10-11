@@ -29,8 +29,8 @@ void CMT::initialize(const Mat &im_gray,
 
     //Create initial set of active keypoints
     for (size_t i = 0; i < keypoints.size(); i++) {
-        context->points_active.push_back(keypoints[i].pt);
-        context->classes_active = i;
+        context->points_active.emplace_back(keypoints[i].pt);
+        context->classes_active.emplace_back(i);
     }
     //Initialize matcher
     context->matcher.initialize(context->points_active, descriptors,
