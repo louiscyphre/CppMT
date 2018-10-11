@@ -53,7 +53,7 @@ endif()
 
 if (NOT DESCRIPTORS_TYPE)
     #set(DESCRIPTORS_TYPE cv::ORB)
-    set(DESCRIPTORS_TYPE cv::SIFT)
+    set(DESCRIPTORS_TYPE cv::xfeatures2d::SIFT)
     set(DETECTOR_STR ${DESCRIPTORS_TYPE})
 endif()
 
