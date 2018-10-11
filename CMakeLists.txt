@@ -45,34 +45,32 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions(-DDEBUG)
     set(DEBUG TRUE)
     set(PROJECT_TARGET_FILES common.cpp
-            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-            fastcluster/fastcluster.cpp)# debug/gdb.c)
+            CMT.cpp Fusion.cpp Matcher.cpp Tracker.cpp)# debug/gdb.c)
 else()
     set(PROJECT_TARGET_FILES common.cpp
-            CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
-            fastcluster/fastcluster.cpp)
+            CMT.cpp Fusion.cpp Matcher.cpp Tracker.cpp)
 endif()
 
 if (NOT DESCRIPTORS_TYPE)
     #set(DESCRIPTORS_TYPE cv::ORB)
-    set(DESCRIPTORS_TYPE cv::BRISK)
+    set(DESCRIPTORS_TYPE cv::SIFT)
     set(DETECTOR_STR ${DESCRIPTORS_TYPE})
 endif()
 
 if (NOT MAX_POINTS)
-    set(MAX_POINTS 5000)
+    set(MAX_POINTS 500)
 endif()
 
 if (NOT POINTS_QUALITY_LEVEL_INIT)
-    set(POINTS_QUALITY_LEVEL_INIT 0.1)
+    set(POINTS_QUALITY_LEVEL_INIT 0.9)
 endif()
 
 if (NOT POINTS_QUALITY_LEVEL_DETECT)
-    set(POINTS_QUALITY_LEVEL_DETECT 0.01)
+    set(POINTS_QUALITY_LEVEL_DETECT 0.9)
 endif()
 
 if (NOT MIN_DISTANCE)
-    set(MIN_DISTANCE 5)
+    set(MIN_DISTANCE 20)
 endif()
 
 set(LIBRARY_NAME  cmt)
