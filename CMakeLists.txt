@@ -52,8 +52,9 @@ else()
 endif()
 
 if (NOT DESCRIPTORS_TYPE)
-    #set(DESCRIPTORS_TYPE cv::ORB)
-    set(DESCRIPTORS_TYPE cv::xfeatures2d::SIFT)
+    set(DESCRIPTORS_TYPE cv::ORB)
+    #set(DESCRIPTORS_TYPE cv::FAST)
+    #set(DESCRIPTORS_TYPE cv::xfeatures2d::SURF)
     set(DETECTOR_STR ${DESCRIPTORS_TYPE})
 endif()
 
@@ -62,15 +63,15 @@ if (NOT MAX_POINTS)
 endif()
 
 if (NOT POINTS_QUALITY_LEVEL_INIT)
-    set(POINTS_QUALITY_LEVEL_INIT 0.9)
+    set(POINTS_QUALITY_LEVEL_INIT 0.3)
 endif()
 
 if (NOT POINTS_QUALITY_LEVEL_DETECT)
-    set(POINTS_QUALITY_LEVEL_DETECT 0.9)
+    set(POINTS_QUALITY_LEVEL_DETECT 0.3)
 endif()
 
 if (NOT MIN_DISTANCE)
-    set(MIN_DISTANCE 20)
+    set(MIN_DISTANCE 5)
 endif()
 
 set(LIBRARY_NAME  cmt)
