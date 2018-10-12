@@ -18,19 +18,23 @@ before_install:
 
 before_script:
   - mkdir /home/travis/build/src
+  - mkdir /home/travis/build/src/opencv_contrib
+  - cd /home/travis/build/src/opencv_contrib
+  - git clone https://github.com/opencv/opencv_contrib.git .
+  - git checkout master
   - mkdir /home/travis/build/src/ocvsrc
   - cd /home/travis/build/src/ocvsrc
   - git clone https://github.com/opencv/opencv.git .
   - git checkout master
-  
+
   - cd /home/travis/build
   - mkdir /home/travis/build/bin
   - mkdir /home/travis/build/bin/lib
   - mkdir /home/travis/build/bin/lib/opencv
   - cd /home/travis/build/bin/lib/opencv
-  
-  - cmake ../../../src/ocvsrc -DCMAKE_INSTALL_PREFIX=/home/travis/build -DCMAKE_SOURCE_DIR=/home/travis/build/src/ocvsrc  -DCMAKE_BINARY_DIR=/home/travis/build/bin/lib/opencv -DENABLE_FAST_MATH=ON -DWITH_EIGEN=1 -DWITH_TBB=ON -DWITH_OPENCL=1 -DENABLE_BUILD_HARDENING=ON -DWITH_MATLAB=ON -DWITH_GTK=ON -DWITH_GTK_2_X=ON
-  - make  
+
+  - cmake ../../../src/ocvsrc -DCMAKE_INSTALL_PREFIX=/home/travis/build -DCMAKE_SOURCE_DIR=/home/travis/build/src/ocvsrc  -DCMAKE_BINARY_DIR=/home/travis/build/bin/lib/opencv -DOPENCV_EXTRA_MODULES_PATH=/home/travis/build/src/opencv_contrib/modules -DOPENCV_ENABLE_NONFREE=ON -DENABLE_FAST_MATH=ON -DWITH_EIGEN=1 -DWITH_TBB=ON -DENABLE_BUILD_HARDENING=OFF -DWITH_MATLAB=ON -DWITH_GTK=ON -DWITH_GTK_2_X=ON -DBUILD_LIST=core,features2d,highgui,improc,calib3d,imgcodecs,videoio,video,opencv_aruco,xfeatures2d -DBUILD_opencv_dnn=OFF -DBUILD_opencv_aruco=OFF -DBUILD_opencv_bgsegm=OFF -DBUILD_opencv_bioinspired=OFF -DBUILD_opencv_ccalib=OFF -DBUILD_opencv_cnn_3dobj=OFF -DBUILD_opencv_cvv=OFF -DBUILD_opencv_datasets=OFF -DBUILD_opencv_dnn_objdetect=OFF -DBUILD_opencv_dnns_easily_fooled=OFF -DBUILD_opencv_dpm=OFF -DBUILD_opencv_face=OFF -DBUILD_opencv_fuzzy=OFF -DBUILD_opencv_freetype=OFF -DBUILD_opencv_hdf=OFF -DBUILD_opencv_line_descriptor=OFF -DBUILD_opencv_matlab=OFF -DBUILD_opencv_ovis=OFF -DBUILD_opencv_plot=OFF -DBUILD_opencv_rgbd=OFF -DBUILD_opencv_reg=OFF -DBUILD_opencv_saliency=OFF -DBUILD_opencv_sfm=OFF -DBUILD_opencv_structured_light=OFF -DBUILD_opencv_surface_matching=OFF -DBUILD_opencv_text=OFF -DBUILD_opencv_tracking=OFF -DBUILD_opencv_ximgproc=OFF -DBUILD_opencv_xobjdetect=OFF -DBUILD_opencv_xphoto=OFF
+  - make
   - make install
 
   - mkdir /home/travis/build/bin/lib/cmt
