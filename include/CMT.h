@@ -27,6 +27,22 @@ namespace cmt {
 
         Mat im_prev;
 
+        enum class Settings {
+            maxPointsToDetect,
+            minimalDistance,
+            qualityLevelInitial,
+            qualityLevelDetection
+        };
+
+        typedef struct {
+            int maxPointsToDetect = MAX_POINTS;
+            double minimalDistance = MIN_DISTANCE;
+            double qualityLevelInitial = POINTS_QUALITY_LEVEL_INIT;
+            double qualityLevelDetection = POINTS_QUALITY_LEVEL_DETECT;
+        } settings_t;
+
+        settings_t settings;
+
     } context_t;
 
     class CMT {
@@ -58,6 +74,21 @@ namespace cmt {
             }
 
             void processFrame(const Mat im_gray);
+
+            template<typename T> void adjust(const T &value,
+                const context_t::Settings &setting) {
+                //TODO without switch
+                switch (setting) {
+                    case context_t::Settings::maxPointsToDetect:
+                        context->settings.maxPointsToDetect = value;
+                    case context_t::Settings::minimalDistance:
+                        context->settings.minimalDistance = value;
+                    case context_t::Settings::qualityLevelInitial:
+                        context->settings.qualityLevelInitial = value;
+                    case context_t::Settings::qualityLevelDetection:
+                        context->settings.qualityLevelDetection = value;
+                }
+            }
 
         private:
             Ptr <FeatureDetector> detector;

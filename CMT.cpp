@@ -16,8 +16,10 @@ void CMT::initialize(const Mat &im_gray,
 
     if (points.size() == 0) {
         vector<Point2f> coords2f;
-        cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
-                                POINTS_QUALITY_LEVEL_INIT, MIN_DISTANCE);
+        cv::goodFeaturesToTrack(im_gray, coords2f,
+                                context->settings.maxPointsToDetect,
+                                context->settings.qualityLevelInitial,
+                                context->settings.minimalDistance);
         cv::KeyPoint::convert(coords2f, keypoints);
     } else {
         keypoints = points;
@@ -62,8 +64,10 @@ void CMT::processFrame(Mat im_gray) {
     //Detect keypoints, compute descriptors
     vector<Point2f> coords2f;
     //The more points is better, later we will remove unnecessary points
-    cv::goodFeaturesToTrack(im_gray, coords2f, MAX_POINTS,
-                            POINTS_QUALITY_LEVEL_DETECT, MIN_DISTANCE);
+    cv::goodFeaturesToTrack(im_gray, coords2f,
+                            context->settings.maxPointsToDetect,
+                            context->settings.qualityLevelInitial,
+                            context->settings.minimalDistance);
     vector<KeyPoint> keypoints;
     cv::KeyPoint::convert(coords2f, keypoints);
 
