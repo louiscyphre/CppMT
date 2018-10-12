@@ -34,7 +34,7 @@ namespace cmt {
             CMT() : str_detector(DETECTOR_STR), str_descriptor(DESCRIPTOR_STR),
                     context(nullptr){};
 
-            context_t* createContext(const Mat &im_gray, //const Rect &rect,
+            context_t* createContext(const Mat &im_gray,
               const std::vector<cv::KeyPoint> &points = std::vector<cv::KeyPoint>()) {
                 context = new context_t;
                 initialize(im_gray, points);
