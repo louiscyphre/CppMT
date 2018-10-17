@@ -6,7 +6,8 @@
 namespace cmt {
 
 void CMT::initialize(const Mat &im_gray,
-                     const std::vector<cv::KeyPoint> &points) {
+                     const std::vector<cv::KeyPoint> &points,
+                     const cv::Mat &descriptors) {
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial image
@@ -14,7 +15,7 @@ void CMT::initialize(const Mat &im_gray,
 
     vector<cv::KeyPoint> keypoints;
 
-    if (points.size() == 0) {
+    if (points.empty()) {
         vector<Point2f> coords2f;
         cv::goodFeaturesToTrack(im_gray, coords2f,
                                 context->settings.maxPointsToDetect,
@@ -24,18 +25,19 @@ void CMT::initialize(const Mat &im_gray,
     } else {
         keypoints = points;
     }
-
-    Mat descriptors;
     descriptor = DESCRIPTORS_T::create();
-    descriptor->compute(im_gray, keypoints, descriptors);
+    Mat pointsDescriptors = descriptors;
 
+    if (pointsDescriptors.empty()) {
+        descriptor->compute(im_gray, keypoints, pointsDescriptors);
+    }
     //Create initial set of active keypoints
     for (size_t i = 0; i < keypoints.size(); i++) {
         context->points_active.emplace_back(keypoints[i].pt);
         context->classes_active.emplace_back(i);
     }
     //Initialize matcher
-    context->matcher.initialize(context->points_active, descriptors,
+    context->matcher.initialize(context->points_active, pointsDescriptors,
                                 context->classes_active);
 
     FILE_LOG(logDEBUG) << "CMT::initialize() return";
