@@ -9,7 +9,7 @@
 #include "Tracker.h"
 
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/xfeatures2d.hpp>
+//#include <opencv2/xfeatures2d.hpp>
 
 using cv::FeatureDetector;
 using cv::DescriptorExtractor;
