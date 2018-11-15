@@ -62,7 +62,7 @@ if (NOT DESCRIPTORS_TYPE)
 endif()
 
 if (NOT MAX_POINTS)
-    set(MAX_POINTS 10)
+    set(MAX_POINTS 28)
 endif()
 
 if (NOT POINTS_QUALITY_LEVEL_INIT)
@@ -74,7 +74,7 @@ if (NOT POINTS_QUALITY_LEVEL_DETECT)
 endif()
 
 if (NOT MIN_DISTANCE)
-    set(MIN_DISTANCE 30)
+    set(MIN_DISTANCE 20)
 endif()
 
 set(LIBRARY_NAME  cmt)

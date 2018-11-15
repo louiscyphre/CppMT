@@ -1,6 +1,7 @@
 #include "CMT.h"
 
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 
 namespace cmt {
@@ -25,11 +26,11 @@ void CMT::initialize(const Mat &im_gray,
     } else {
         keypoints = points;
     }
-    descriptor = DESCRIPTORS_T::create();
+    context->descriptor = DESCRIPTORS_T::create();
     Mat pointsDescriptors = descriptors;
 
     if (pointsDescriptors.empty()) {
-        descriptor->compute(im_gray, keypoints, pointsDescriptors);
+        context->descriptor->compute(im_gray, keypoints, pointsDescriptors);
     }
     //Create initial set of active keypoints
     for (size_t i = 0; i < keypoints.size(); i++) {
@@ -76,7 +77,7 @@ void CMT::processFrame(Mat im_gray) {
     FILE_LOG(logDEBUG) << keypoints.size() << " keypoints found.";
 
     Mat descriptors;
-    descriptor->compute(im_gray, keypoints, descriptors);
+    context->descriptor->compute(im_gray, keypoints, descriptors);
 
     //Match keypoints globally
     vector<Point2f> points_matched_global;

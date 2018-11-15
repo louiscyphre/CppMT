@@ -20,6 +20,9 @@ namespace cmt {
 
 typedef struct {
 
+    Ptr<FeatureDetector> detector;
+    Ptr<DescriptorExtractor> descriptor;
+
     Matcher matcher;
 
     vector<Point2f> points_active;
@@ -94,8 +97,8 @@ class CMT {
         }
 
     private:
-        Ptr<FeatureDetector> detector;
-        Ptr<DescriptorExtractor> descriptor;
+        //Ptr<FeatureDetector> detector;
+        //Ptr<DescriptorExtractor> descriptor;
 
         Fusion fusion;
         Tracker tracker;
